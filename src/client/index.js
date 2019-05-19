@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { Component } from "react"
 import "./app.css"
 // import ReactImage from './react.png'
@@ -5,15 +6,21 @@ import ReactDOM from "react-dom"
 import axios from "axios"
 const celer = require("celer-web-sdk")
 import Web3 from "web3"
+=======
+>>>>>>> c62b8059974525d6f9f881eabdf8b8dc84175290
 var app = require("./app")
   ; (function () {
     var scene, loadCat, addCats
 
+<<<<<<< HEAD
     const maxMoveRadius = 40
 
     var container, scene, camera, renderer, controls, stats
     var keyboard = new THREEx.KeyboardState()
     var clock = new THREE.Clock()
+=======
+  const maxMoveRadius = 40
+>>>>>>> c62b8059974525d6f9f881eabdf8b8dc84175290
 
     init()
 
@@ -304,5 +311,10 @@ var app = require("./app")
       renderer.render(scene, camera)
     }
 
+<<<<<<< HEAD
     app.runApp(loadCat, killCat)
   })()
+=======
+  app.runApp({ loadCat, killCat, maxMoveRadius })
+})()
+>>>>>>> c62b8059974525d6f9f881eabdf8b8dc84175290

@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import "./app.css"
 import ReactDOM from "react-dom"
 import axios from "axios"
 const celer = require("celer-web-sdk")
@@ -10,12 +9,17 @@ const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
 const nftSharesAddress = "0xAC4fE852bE61EB1968233263A400504d92742a0a"
 
 
-export const runApp = (loadCat, killCat) => {
+export const runApp = opts => {
+  const NFT = contract("../../build/contract/MockERC721.json")
+  const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
+  const nftSharesAddress = "0xAC4fE852bE61EB1968233263A400504d92742a0a"
+
   class App extends Component {
     interval = false
 
     // TODO empty this after register works
     state = {
+      /*
       player: { color: "blue" },
       game: {
         players: [
@@ -40,12 +44,12 @@ export const runApp = (loadCat, killCat) => {
             }
           }
         ]
-      }
+      }*/
     }
 
     register = async () => {
       // TODO delete this after register works
-      this.state.game.players.forEach(loadCat)
+      this.state.game.players.forEach(opts.loadCat)
 
       try {
         if (window.ethereum) {
@@ -71,11 +75,8 @@ export const runApp = (loadCat, killCat) => {
         // Celer send to game escrow
         const message = "register"
         const accounts = await web3.eth.getAccounts()
-        const signature = await web3.eth.personal.sign(
-          message,
-          accounts[0],
-          ""
-        )
+        const signature = await web3.eth.personal.sign(message, accounts[0], "")
+        console.log(signature)
         axios
           .post("/api/register", {
             sig: signature,
@@ -116,7 +117,7 @@ export const runApp = (loadCat, killCat) => {
 
       // kill a cat if somebody lost
       if (data.game.state === "won" && this.state.game.state !== "won") {
-        killCat(data.game.loser)
+        opts.killCat(data.game.loser)
       }
 
       // set the state on react (is this useless?)
@@ -137,8 +138,8 @@ export const runApp = (loadCat, killCat) => {
       const midx = rect.width / 2
       const midy = rect.height / 2 // should be the same as midx
 
-      const moveMultiplierX = maxMoveRadius / midx
-      const moveMultiplierY = maxMoveRadius / midy
+      const moveMultiplierX = opts.maxMoveRadius / midx
+      const moveMultiplierY = opts.maxMoveRadius / midy
 
       const x = (e.clientX - rect.left - midx) * moveMultiplierX
       const y = -(e.clientY - rect.top - midy) * moveMultiplierY // y is inverted in browser as compared to 2d cartesian coords
@@ -148,11 +149,7 @@ export const runApp = (loadCat, killCat) => {
 
       const moveStr = JSON.stringify(result)
       const accounts = await web3.eth.getAccounts()
-      const signature = await web3.eth.personal.sign(
-        moveStr,
-        accounts[0],
-        ""
-      )
+      const signature = await web3.eth.personal.sign(moveStr, accounts[0], "")
 
       let res = await axios({
         method: "POST",
