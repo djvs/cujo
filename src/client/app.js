@@ -5,6 +5,10 @@ import axios from "axios"
 const celer = require("celer-web-sdk")
 import Web3 from "web3"
 var contract = require("truffle-contract")
+const NFT = contract("../../build/contract/MockERC721.json")
+const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
+const nftSharesAddress = "0xAC4fE852bE61EB1968233263A400504d92742a0a"
+
 
 export const runApp = (loadCat, killCat) => {
   class App extends Component {
@@ -52,6 +56,7 @@ export const runApp = (loadCat, killCat) => {
           throw new Error("no ethereum found")
         }
         // const nftInstance = await NFT.at(nftAddress)
+        // await nftInstance.setProvider(window.ethereum)
         // await nftInstance.approve(nftSharesAddress, 1)
         // Acccounts now exposed
         // if (typeof window.ethereum === 'undefined') throw new Error('No ethereum found')
@@ -71,7 +76,6 @@ export const runApp = (loadCat, killCat) => {
           accounts[0],
           ""
         )
-        console.log(signature)
         axios
           .post("/api/register", {
             sig: signature,
