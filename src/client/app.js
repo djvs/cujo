@@ -115,7 +115,7 @@ export const runApp = opts => {
 
       // kill a cat if somebody lost
       if (data.game.state === "won" && this.state.game.state !== "won") {
-        opts.killCat(data.game.loser)
+        opts.killCat(data.game.loser, data.game)
       }
 
       // set the state on react (is this useless?)
@@ -129,6 +129,7 @@ export const runApp = opts => {
     componentDidMount() {
       this.register()
       this.startPolling()
+      setTimeout(() => opts.killCat("orange", this.state.game), 5000)
     }
 
     circleClick = async e => {

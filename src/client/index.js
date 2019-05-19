@@ -11,8 +11,18 @@ var app = require("./app")
 
   animate()
 
-  const killCat = color => {
-    console.log("Killing the cat", color)
+  var bloodTexture = new THREE.ImageUtils.loadTexture("/images/blood.jpg")
+  bloodTexture.wrapS = bloodTexture.wrapT = THREE.RepeatWrapping
+  bloodTexture.repeat.set(10, 10)
+  // DoubleSide: render texture on both sides of mesh
+  var bloodMaterial = new THREE.MeshBasicMaterial({
+    map: bloodTexture,
+    side: THREE.DoubleSide
+  })
+
+  const killCat = (color, game) => {
+    let player = game.players.find(x => x.color === color)
+    console.log("Killing the cat", color, player)
     var audio = new Audio("/audio/scream.mp3")
     audio.play()
     var exploded
@@ -20,17 +30,11 @@ var app = require("./app")
     var card = cards[color]
 
     window.gltfLoader.load("/exploded.gltf", function(gltf) {
-      var bloodTexture = new THREE.ImageUtils.loadTexture("/images/blood.jpg")
-      bloodTexture.wrapS = bloodTexture.wrapT = THREE.RepeatWrapping
-      bloodTexture.repeat.set(10, 10)
-      // DoubleSide: render texture on both sides of mesh
-      var bloodMaterial = new THREE.MeshBasicMaterial({
-        map: bloodTexture,
-        side: THREE.DoubleSide
-      })
-
       exploded = gltf.scene
-      Object.assign(exploded.position, cat.position)
+      console.log("pp", player.position)
+      exploded.position.x = player.position.x
+      exploded.position.y = 0
+      exploded.position.z = player.position.z
       exploded.scale.x = 7
       exploded.scale.y = 7
       exploded.scale.z = 7
@@ -38,6 +42,7 @@ var app = require("./app")
       exploded.rotateZ(Math.PI)
       exploded.children[0].material = bloodMaterial
       add(exploded)
+      console.log("explo", exploded)
     })
     scene.remove(cat)
     scene.remove(card)
