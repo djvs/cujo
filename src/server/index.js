@@ -94,6 +94,12 @@ const maxMoveRadius = 120
 
 const isValidSig = (msgStr, sig, addr) => {
   try {
+    if (sig.length === 262) {
+      console.log("Shortening double sig")
+      sig = "0x" + sig.substr(132, 130)
+      //sig = sig.substr(0, 132)
+      console.log("new sig", sig, sig.length)
+    }
     const digest = eju.hashPersonalMessage(eju.toBuffer(msgStr))
     // Extract the signature parts so we can recover the public key
     const sigParts = eju.fromRpcSig(sig)
@@ -109,6 +115,7 @@ const isValidSig = (msgStr, sig, addr) => {
       .fromPublicKey(new Buffer(recoveredPubkey, "hex"))
       .getAddressString()
 
+    console.log("addrs", recoveredAddress.toLowerCase(), addr.toLowerCase())
     return recoveredAddress.toLowerCase() === addr.toLowerCase()
   } catch (err) {
     console.log("Signature error", err.message)
