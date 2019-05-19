@@ -17,7 +17,7 @@ require("dotenv").config()
 var game
 
 // player structure: {
-//   pubkey: "0x...",
+//   addr: "0x...",
 //   color: "blue" | "orange",
 //   position: {x: -400, z: -400} // to 400, 400
 // }
@@ -46,7 +46,7 @@ const resetGame = () => {
       {
         image_url:
         color: "orange",
-        pubkey: "0x9999",
+        addr: "0x9999",
         position: {
           x: -10,
           z: -10
@@ -55,7 +55,7 @@ const resetGame = () => {
       {
         image_url:
         color: "blue",
-        pubkey: "0x0000",
+        addr: "0x0000",
         position: {
           x: 0,
           z: 0
@@ -150,7 +150,7 @@ const validMove = (player, move) => {
 // def susceptible to replay attacks :(
 const getPlayer = (addr, sig, moveStr) => {
   // does that player exist
-  let player = game.players.find(x => x.pubkey === addr)
+  let player = game.players.find(x => x.addr === addr)
   if (!player) return null
 
   // is the sig valid
@@ -242,6 +242,11 @@ app.get("/api/image", (req, res) => {
   }
 })
 
+app.get("/api/nuke", (req, res) => {
+  resetGame()
+  res.json({ success: true })
+})
+
 app.post("/api/register", (req, res) => {
   // doesn't have a real locking mechanism so not really safe
   if (game.players.length > 2) return res.status(400).json("too_many_players")
@@ -249,7 +254,8 @@ app.post("/api/register", (req, res) => {
   let sigValidity = isValidSig("register", req.body.sig, req.body.addr)
   if (!sigValidity) return res.status(400).json("invalid_sig")
 
-  const takenColors = R.pluck(game.players, "color")
+  const takenColors = R.pluck("color", game.players)
+  console.log("taken colors", takenColors)
   const color = colors.find(c => takenColors.indexOf(c) === -1) // orange, if orange is taken, blue
 
   const player = {
@@ -258,6 +264,14 @@ app.post("/api/register", (req, res) => {
     image_url: kitties[color],
     position: defaultPositions[color]
   }
+
+  let existing = game.players.find(x => x.addr === req.body.addr)
+  if (existing) {
+    game.players = game.players.filter(x => x != existing)
+  } // let players reset if they refresh, lol
+  /* if (R.pluck("addr", game.players).indexOf(player.addr) != -1) {
+    return res.status(400).json("already_playing")
+  } */
 
   game.players.push(player)
 
