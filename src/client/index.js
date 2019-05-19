@@ -2,7 +2,6 @@ var app = require("./app")
   ; (function () {
     var scene, loadCat, addCats
 
-    const maxMoveRadius = 40
 
     var container, scene, camera, renderer, controls, stats
     var keyboard = new THREEx.KeyboardState()

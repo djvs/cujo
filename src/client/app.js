@@ -59,6 +59,7 @@ export const runApp = opts => {
         } else {
           throw new Error("no ethereum found")
         }
+        await NFT.setProvider(window.ethereum)
         // const nftInstance = await NFT.at(nftAddress)
         // await nftInstance.setProvider(window.ethereum)
         // await nftInstance.approve(nftSharesAddress, 1)
