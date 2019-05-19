@@ -1,18 +1,6 @@
-import React, { Component } from "react"
-import "./app.css"
-// import ReactImage from './react.png'
-import ReactDOM from "react-dom"
-import axios from "axios"
-const celer = require("celer-web-sdk")
-import Web3 from "web3"
-var contract = require("truffle-contract")
 var app = require("./app")
 ;(function() {
   var scene, loadCat, addCats
-
-  const NFT = contract("../../build/contract/MockERC721.json")
-  const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
-  const nftSharesAddress = "0xAC4fE852bE61EB1968233263A400504d92742a0a"
 
   const maxMoveRadius = 40
 
@@ -309,5 +297,5 @@ var app = require("./app")
     renderer.render(scene, camera)
   }
 
-  app.runApp(loadCat, killCat)
+  app.runApp({ loadCat, killCat, maxMoveRadius })
 })()
