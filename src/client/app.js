@@ -49,7 +49,7 @@ export const runApp = opts => {
 
     register = async () => {
       // TODO delete this after register works
-      this.state.game.players.forEach(opts.loadCat)
+      // this.state.game.players.forEach(opts.loadCat)
 
       try {
         if (window.ethereum) {
