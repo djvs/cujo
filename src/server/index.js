@@ -22,15 +22,14 @@ var game
 //   position: {x: -400, z: -400} // to 400, 400
 // }
 
-/*
 const resetGame = () => {
   game = {
     state: "initial",
     players: []
   }
-} 
-*/
+}
 
+/*
 const resetGame = () => {
   game = {
     state: "won",
@@ -59,7 +58,7 @@ const resetGame = () => {
       }
     ]
   }
-}
+} */
 
 resetGame()
 
@@ -93,10 +92,15 @@ const isValidSig = (msgStr, sig, addr) => {
     // Extract the signature parts so we can recover the public key
     const sigParts = eju.fromRpcSig(sig)
     // Recover public key from the hash of the message we constructed and the signature the user provided
-    const recoveredPubkey = eju.ecrecover(digest, sigParts.v, sigParts.r, sigParts.s)
+    const recoveredPubkey = eju.ecrecover(
+      digest,
+      sigParts.v,
+      sigParts.r,
+      sigParts.s
+    )
     // Convert the recovered public key into the corresponding ethereum address
     const recoveredAddress = wallet
-      .fromPublicKey(new Buffer(recoveredPubkey, 'hex'))
+      .fromPublicKey(new Buffer(recoveredPubkey, "hex"))
       .getAddressString()
 
     return recoveredAddress.toLowerCase() === addr.toLowerCase()
