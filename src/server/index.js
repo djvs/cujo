@@ -82,6 +82,7 @@ const startGame = () => {
 
 const moveOutOfBounds = pos => {
   if (Math.abs(pos.x) > 400 || Math.abs(pos.z) > 400) {
+    return true
   }
 }
 
@@ -89,7 +90,7 @@ const mergePos = (p1, p2) => {
   return { x: p1.x + p2.x, z: p1.z + p2.z }
 }
 
-const maxMoveRadius = 40
+const maxMoveRadius = 120
 
 const isValidSig = (msgStr, sig, addr) => {
   try {
@@ -110,13 +111,14 @@ const isValidSig = (msgStr, sig, addr) => {
 
     return recoveredAddress.toLowerCase() === addr.toLowerCase()
   } catch (err) {
-    console.log(err.message)
+    console.log("Signature error", err.message)
     return false
   }
 }
 
 const validMove = (player, move) => {
   // is the move initially valid?
+  console.log("newpos params", player.position, move)
   if (
     typeof move !== "object" ||
     typeof move.x !== "number" ||
@@ -126,10 +128,11 @@ const validMove = (player, move) => {
     return null
   }
   if (Math.sqrt(move.x ** 2 + move.z ** 2) > maxMoveRadius) {
-    console.log("move outside bounds")
+    console.log("move too big bounds")
     return null
   }
   let newpos = mergePos(player.position, move)
+  console.log("newpos1", newpos)
   if (moveOutOfBounds(newpos)) {
     return null
   }
@@ -138,17 +141,21 @@ const validMove = (player, move) => {
   if (Math.random() > 1 / 3) {
     let foundAValidFuckup = false
     var fuckup
+    console.log("fuckup", fuckup)
     while (!foundAValidFuckup) {
-      fuckup = { x: Math.random() * 20, z: Math.random() * 20 }
+      fuckup = { x: Math.random() * 20 - 10, z: Math.random() * 20 - 10 }
       foundAValidFuckup = !moveOutOfBounds(mergePos(newpos, fuckup))
     }
     newpos = mergePos(newpos, fuckup)
+    console.log("newpos2", newpos)
   }
+
   return newpos
 }
 
 // def susceptible to replay attacks :(
 const getPlayer = (addr, sig, moveStr) => {
+  console.log("GP", addr, sig, moveStr)
   // does that player exist
   let player = game.players.find(x => x.addr === addr)
   if (!player) return null
@@ -192,8 +199,8 @@ const commitMove = (player1, moveResult) => {
   player2 = getOtherPlayer(player1)
   console.log("CMP2", player2)
   const diffX = player1.position.x - player2.position.x
-  const diffY = player1.position.y - player2.position.y
-  if (Math.sqrt(diffX ** 2 + diffY ** 2) < 30) {
+  const diffZ = player1.position.z - player2.position.z
+  if (Math.sqrt(diffX ** 2 + diffZ ** 2) < 50) {
     concludeGame(player1)
   }
 }
@@ -207,20 +214,18 @@ app.use(express.static("dist"))
 app.use(express.static(path.join(__dirname, "/public")))
 
 app.post("/api/move", (req, res) => {
-  /* 
   if (game.players.length !== 2) return res.status(400).json("bad_player_count")
 
   const player = getPlayer(req.body.addr, req.body.sig, req.body.move)
+
   if (player === null) {
     return res.status(400).json("no_player")
   }
 
-*/
-  const player = game.players.find(x => x.color === "blue")
-
   const move = JSON.parse(req.body.move)
 
   let moveResult = validMove(player, move)
+
   if (!moveResult) return res.status(400).json("invalid_move")
 
   // persist moveResult (which if not null is a new position for the player), which will also change the game state if it's a win
@@ -267,6 +272,10 @@ app.post("/api/register", (req, res) => {
 
   let existing = game.players.find(x => x.addr === req.body.addr)
   if (existing) {
+    player.color = existing.color
+    console.log("existingpos", defaultPositions, player.color)
+    player.position = defaultPositions[player.color]
+    player.image_url = existing.image_url
     game.players = game.players.filter(x => x != existing)
   } // let players reset if they refresh, lol
   /* if (R.pluck("addr", game.players).indexOf(player.addr) != -1) {

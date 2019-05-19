@@ -97,13 +97,6 @@ var app = require("./app")
     controls.maxDistance = 12000
     controls.minDistance = 500
 
-    /* stats = new Stats()
-    stats.domElement.style.position = "absolute"
-    stats.domElement.style.bottom = "0px"
-    stats.domElement.style.zIndex = 100
-    container.appendChild(stats.domElement)
-   */
-
     /* var light = new THREE.PointLight(0xffffff)
     light.position.set(0, 250, 0)
     scene.add(light) */
@@ -119,30 +112,6 @@ var app = require("./app")
     scene.add(dlightTarget)
     dlight.target = dlightTarget
     scene.add(dlight)
-
-    /* 
-    var sphereGeometry = new THREE.SphereGeometry(50, 32, 16)
-    var sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x8888ff })
-    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
-    sphere.position.set(100, 50, -50)
-    scene.add(sphere)
-  
-    // Create an array of materials to be used in a cube, one for each side
-    var cubeMaterialArray = []
-    // order to add materials: x+,x-,y+,y-,z+,z-
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff3333 }))
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff8800 }))
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xffff33 }))
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x33ff33 }))
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x3333ff }))
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x8833ff }))
-  
-    var cubeMaterials = new THREE.MeshFaceMaterial(cubeMaterialArray)
-    var cubeGeometry = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1)
-    cube = new THREE.Mesh(cubeGeometry, cubeMaterials)
-    cube.position.set(-100, 50, -50)
-    scene.add(cube)
-   */
 
     var fur1Texture = new THREE.ImageUtils.loadTexture("/images/fur1.jpg")
     fur1Texture.wrapS = fur1Texture.wrapT = THREE.CubeUVReflectionMapping
@@ -167,7 +136,13 @@ var app = require("./app")
     })
 
     // orange cat
-    loadCat = player => {
+    loadCat = (player, game) => {
+      if (!player) {
+        return false
+      }
+      if (game.loser && player.color === game.loser) {
+        return false
+      }
       window.gltfLoader.load("/cat.gltf", function(gltf) {
         let cat = (cats[player.color] = gltf.scene)
 
@@ -186,7 +161,6 @@ var app = require("./app")
         catMesh.material =
           player.color === "orange" ? fur1Material : fur2Material
 
-        console.log("image url", player.image_url)
         var cardTexture = new THREE.ImageUtils.loadTexture(
           "/api/image?url=" + encodeURI(player.image_url)
         )
@@ -198,14 +172,12 @@ var app = require("./app")
           side: THREE.DoubleSide
         })
 
-        console.log("card assign?")
         var cardGeometry = new THREE.PlaneGeometry(75, 75, 2, 2)
         var card = new THREE.Mesh(cardGeometry, cardMaterial)
         card.position.x = player.position.x
         card.position.y = 150
         card.position.z = player.position.z
         card.rotateY(Math.PI / 2)
-        console.log("card assign...")
         cards[player.color] = card
 
         add(cat)
@@ -214,8 +186,8 @@ var app = require("./app")
     }
 
     addCats = game => {
-      loadCat(game.players.find(x => x.color === "orange"))
-      loadCat(game.players.find(x => x.color === "blue"))
+      loadCat(game.players.find(x => x.color === "orange"), game)
+      loadCat(game.players.find(x => x.color === "blue"), game)
     }
 
     // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
@@ -269,5 +241,5 @@ var app = require("./app")
     renderer.render(scene, camera)
   }
 
-  app.runApp({ loadCat, killCat, maxMoveRadius, cats, cards, resetScene })
+  app.runApp({ addCats, killCat, maxMoveRadius, cats, cards, resetScene })
 })()

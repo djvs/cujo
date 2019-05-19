@@ -76,6 +76,7 @@ export const runApp = opts => {
         const message = "register"
         const accounts = await web3.eth.getAccounts()
         const signature = await web3.eth.personal.sign(message, accounts[0], "")
+        this.setState({ addr: accounts[0] })
         console.log(signature)
         axios
           .post("/api/register", {
@@ -92,7 +93,7 @@ export const runApp = opts => {
     movePlayers = game => {
       opts.resetScene()
       console.log("Moving players", game)
-      game.players.forEach(loadCat)
+      addCats(game)
     }
 
     startPolling = () => {
@@ -109,7 +110,6 @@ export const runApp = opts => {
 
     setGameState = res => {
       let data = res.data
-      console.log("SGS", data)
       // move the players
       this.movePlayers(data.game)
 
@@ -142,8 +142,7 @@ export const runApp = opts => {
       const x = (e.clientX - rect.left - midx) * moveMultiplierX
       const y = -(e.clientY - rect.top - midy) * moveMultiplierY // y is inverted in browser as compared to 2d cartesian coords
 
-      const result = { x, z: y } // z is the horizontal plane on the board, not y
-      console.log("xy", result)
+      const result = { x: y, z: x } // z is the horizontal plane on the board, not y
 
       const moveStr = JSON.stringify(result)
       const accounts = await web3.eth.getAccounts()

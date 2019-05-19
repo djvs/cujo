@@ -30,3 +30,6 @@ Ropsten MockERC721: 0x263E49C2e57274DE58b57D070234776F1EC454A5
 
 ## Dapper
 http://bit.ly/DapperDevelopersKit
+
+## Attributions
+Attribution/thanks especially to Three.Js demo authors, Goxel & obj2gltf, React, axios, and other libs.  Most (all?) images are public domain besides CryptoKitties (unknown license).  Image assets all found via Google Images public domain license options.  Screaming noise from [this Vine](https://www.youtube.com/watch?v=TAZYqXwW5lA).
