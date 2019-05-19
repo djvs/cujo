@@ -129,7 +129,6 @@ export const runApp = opts => {
     componentDidMount() {
       this.register()
       this.startPolling()
-      setTimeout(() => opts.killCat("orange", this.state.game), 5000)
     }
 
     circleClick = async e => {
