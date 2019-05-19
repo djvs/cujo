@@ -8,7 +8,6 @@ const NFT = contract("../../build/contract/MockERC721.json")
 const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
 const nftSharesAddress = "0xAC4fE852bE61EB1968233263A400504d92742a0a"
 
-
 export const runApp = opts => {
   const NFT = contract("../../build/contract/MockERC721.json")
   const nftAddress = "0x263E49C2e57274DE58b57D070234776F1EC454A5"
@@ -91,11 +90,9 @@ export const runApp = opts => {
     }
 
     movePlayers = game => {
+      opts.resetScene()
       console.log("Moving players", game)
-      game.players.forEach(player => {
-        cats[player.color].position.x = player.position.x
-        cats[player.color].position.z = player.position.z
-      })
+      game.players.forEach(loadCat)
     }
 
     startPolling = () => {

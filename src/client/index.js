@@ -3,7 +3,9 @@ var app = require("./app")
   var container, scene, camera, renderer, controls, stats
   var keyboard = new THREEx.KeyboardState()
   var clock = new THREE.Clock()
-  const maxMoveRadius = 40
+  var cats = {}
+  var cards = {}
+  const maxMoveRadius = 120
 
   init()
 
@@ -267,5 +269,5 @@ var app = require("./app")
     renderer.render(scene, camera)
   }
 
-  app.runApp({ loadCat, killCat, maxMoveRadius })
+  app.runApp({ loadCat, killCat, maxMoveRadius, cats, cards, resetScene })
 })()
