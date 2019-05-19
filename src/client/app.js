@@ -65,12 +65,11 @@ export const runApp = (loadCat, killCat) => {
         // Deposit into a celer channel
         // Celer send to game escrow
         const message = "register"
-        const hash = web3.utils.sha3(message)
         const accounts = await web3.eth.getAccounts()
         const signature = await web3.eth.personal.sign(
-          hash,
+          message,
           accounts[0],
-          "test"
+          ""
         )
         console.log(signature)
         axios

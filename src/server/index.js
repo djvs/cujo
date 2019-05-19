@@ -7,6 +7,7 @@ const secp256k1 = require("secp256k1")
 const bodyParser = require("body-parser")
 const eju = require("ethereumjs-util")
 const request = require("request")
+const wallet = require("ethereumjs-wallet")
 
 const app = express()
 
@@ -88,12 +89,19 @@ const maxMoveRadius = 40
 
 const isValidSig = (msgStr, sig, addr) => {
   try {
-    return secp256k1.verify(
-      eju.toBuffer(eju.sha256(msgStr)),
-      eju.toBuffer(sig),
-      eju.toBuffer(addr)
-    )
+    const digest = eju.hashPersonalMessage(eju.toBuffer(msgStr))
+    // Extract the signature parts so we can recover the public key
+    const sigParts = eju.fromRpcSig(sig)
+    // Recover public key from the hash of the message we constructed and the signature the user provided
+    const recoveredPubkey = eju.ecrecover(digest, sigParts.v, sigParts.r, sigParts.s)
+    // Convert the recovered public key into the corresponding ethereum address
+    const recoveredAddress = wallet
+      .fromPublicKey(new Buffer(recoveredPubkey, 'hex'))
+      .getAddressString()
+
+    return recoveredAddress.toLowerCase() === addr.toLowerCase()
   } catch (err) {
+    console.log(err.message)
     return false
   }
 }
@@ -227,7 +235,7 @@ app.get("/api/image", (req, res) => {
 
 app.post("/api/register", (req, res) => {
   // doesn't have a real locking mechanism so not really safe
-  if (game.players.length >= 2) return res.status(400).json("too_many_players")
+  if (game.players.length > 2) return res.status(400).json("too_many_players")
 
   let sigValidity = isValidSig("register", req.body.sig, req.body.addr)
   if (!sigValidity) return res.status(400).json("invalid_sig")

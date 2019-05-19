@@ -20,6 +20,7 @@
     "celer-web-sdk": "^0.8.3",
     "dotenv": "^8.0.0",
     "ethereumjs-util": "^6.1.0",
+    "ethereumjs-wallet": "^0.6.3",
     "express": "^4.16.3",
     "openzeppelin-solidity": "^2.2.0",
     "ramda": "^0.26.1",
