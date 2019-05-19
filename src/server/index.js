@@ -29,6 +29,13 @@ const resetGame = () => {
   }
 }
 
+const kitties = {
+  blue:
+    "https://img.cn.cryptokitties.co/0x06012c8cf97bead5deae237070f9587f8e7a266d/202.png",
+  orange:
+    "https://img.cn.cryptokitties.co/0x06012c8cf97bead5deae237070f9587f8e7a266d/150.png"
+}
+
 /*
 const resetGame = () => {
   game = {
@@ -38,7 +45,6 @@ const resetGame = () => {
     players: [
       {
         image_url:
-          "https://img.cn.cryptokitties.co/0x06012c8cf97bead5deae237070f9587f8e7a266d/202.png",
         color: "orange",
         pubkey: "0x9999",
         position: {
@@ -48,7 +54,6 @@ const resetGame = () => {
       },
       {
         image_url:
-          "https://img.cn.cryptokitties.co/0x06012c8cf97bead5deae237070f9587f8e7a266d/150.png",
         color: "blue",
         pubkey: "0x0000",
         position: {
@@ -167,9 +172,9 @@ const getKitty = async id => {
   console.log("got kitty", result.data)
 }
 
-let k1 = getKitty(150)
+/* let k1 = getKitty(150)
 let k2 = getKitty(202)
-game.players[0].image = k1.image_url_png
+game.players[0].image = k1.image_url_png */
 
 const getOtherPlayer = player => {
   return game.players.find(x => x !== player)
@@ -250,6 +255,7 @@ app.post("/api/register", (req, res) => {
   const player = {
     addr: req.body.addr,
     color: color,
+    image_url: kitties[color],
     position: defaultPositions[color]
   }
 
