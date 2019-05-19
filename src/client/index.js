@@ -298,10 +298,5 @@ var app = require("./app")
       renderer.render(scene, camera)
     }
 
-<<<<<<< HEAD
-    app.runApp(loadCat, killCat)
+    app.runApp({ loadCat, killCat, maxMoveRadius })
   })()
-=======
-  app.runApp({ loadCat, killCat, maxMoveRadius })
-})()
->>>>>>> c62b8059974525d6f9f881eabdf8b8dc84175290
