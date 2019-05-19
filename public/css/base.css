@@ -1,0 +1,66 @@
+body{
+	font-family: Monospace;
+	font-weight: bold;
+	background-color: #ccccff;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#root{
+  position:absolute;
+  left:0;
+  top:0;
+  height:182px;
+  width:360px;
+  background-color:rgba(255,255,255,0.2);
+  text-align:left;
+  z-index:100;
+  display:flex;
+}
+
+#gamewrap{
+  position:absolute;
+  left:0;
+  top:0px;
+  height:100%;
+  z-index:10;
+}
+
+.headerinner{
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  display:flex;
+}
+.gametitle{
+  font-size:2rem;
+  align-items:center;
+  justify-content:center;
+  padding:1em 0.5em;
+}
+.gametitle small{
+  display:block;
+  font-size:0.9rem;
+}
+
+.gamectrl{
+  padding:1em 0.5em;
+  flex-basis:90%;
+  text-align:center;
+  cursor:crosshair;
+}
+
+.clickcirc{
+  height:120px;
+  width:120px;
+  border-radius:60px;
+  background-color:white;
+  margin:0 auto;
+  background-image:url('/images/radar.jpg');
+  background-size:100% 100%;
+  background-position: 0 0 ;
+}
+.youare{
+  padding:0;
+  margin:0.5em;
+}

@@ -1,0 +1,8 @@
+.vscode
+.env
+node_modules
+dist
+*.log
+yarn.lock
+build*
+truffle-config.js
