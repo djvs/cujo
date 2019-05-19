@@ -143,13 +143,19 @@ export const runApp = (loadCat, killCat) => {
       console.log("xy", result)
 
       const moveStr = JSON.stringify(result)
+      const accounts = await web3.eth.getAccounts()
+      const signature = await web3.eth.personal.sign(
+        moveStr,
+        accounts[0],
+        ""
+      )
 
       let res = await axios({
         method: "POST",
         url: "/api/move",
         data: {
           move: moveStr,
-          sig: "...",
+          sig: signature,
           addr: this.state.addr
         }
       })
