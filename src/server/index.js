@@ -250,7 +250,7 @@ app.post("/api/register", (req, res) => {
   if (!sigValidity) return res.status(400).json("invalid_sig")
 
   const takenColors = R.pluck(game.players, "color")
-  const color = colors.find(c => takenColors.indexOf(color) === -1) // orange, if orange is taken, blue
+  const color = colors.find(c => takenColors.indexOf(c) === -1) // orange, if orange is taken, blue
 
   const player = {
     addr: req.body.addr,
