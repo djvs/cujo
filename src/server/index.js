@@ -213,12 +213,16 @@ const commitMove = (player1, moveResult) => {
 }
 
 // API ///////////////////////////////////////
+app.use((req, res, next) => {
+  console.log("REQ", req)
+  next()
+})
+
+app.use(express.static("public/dist/"))
+
+app.use(express.static("public/"))
 
 app.use(bodyParser.json())
-
-app.use(express.static("dist"))
-
-app.use(express.static(path.join(__dirname, "/public")))
 
 app.post("/api/move", (req, res) => {
   if (game.players.length !== 2) return res.status(400).json("bad_player_count")
@@ -300,8 +304,6 @@ app.post("/api/register", (req, res) => {
 
 // SERVER ///////////////////////////////////
 
-app.listen(
-  process.env.PORT || 8080,
-  process.env.EXPRESS_BIND || "0.0.0.0",
-  () => console.log(`Listening on port ${process.env.PORT || 8080}!`)
+app.listen(process.env.PORT || 8080, () =>
+  console.log(`Listening on port ${process.env.PORT || 8080}!`)
 )
